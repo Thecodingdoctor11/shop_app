@@ -12,45 +12,59 @@ class ProductDetailsScreen extends StatelessWidget {
     final loadedProducts = Provider.of<ProductsProvider>(context, listen: false)
         .findById(productId);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loadedProducts.title),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 300,
-              width: double.infinity,
+      // appBar: AppBar(
+      //   title: Text(loadedProducts.title),
+      // ),
+      body: CustomScrollView(slivers: [
+        SliverAppBar(
+          expandedHeight: 300,
+          pinned: true,
+          flexibleSpace: FlexibleSpaceBar(
+            title: Text(
+              loadedProducts.title,
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            ),
+            background: Hero(
+              tag: loadedProducts.id,
               child: Image.network(
                 loadedProducts.imageUrl,
                 fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              'EGP${loadedProducts.price}',
-              style: Theme.of(context).textTheme.titleLarge,
-              textAlign: TextAlign.left,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: SizedBox(
-                width: double.infinity,
-                child: Text(
-                  'Description: \n${loadedProducts.description}',
-                  textAlign: TextAlign.start,
-                  softWrap: true,
+          ),
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate(
+            [
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                'EGP${loadedProducts.price}',
+                style: Theme.of(context).textTheme.titleLarge,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    loadedProducts.description,
+                    textAlign: TextAlign.center,
+                    softWrap: true,
+                  ),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(
+                height: 800,
+              )
+            ],
+          ),
         ),
-      ),
+      ]),
     );
   }
 }

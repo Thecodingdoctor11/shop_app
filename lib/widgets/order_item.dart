@@ -14,34 +14,45 @@ class OrderItemWidget extends StatefulWidget {
 
 class _OrderItemWidgetState extends State<OrderItemWidget> {
   var _expanded = false;
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 15),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(children: [
-          ListTile(
-            leading: Chip(
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              label: Text('EGP ${widget.order.price}'),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 100),
+      height: _expanded
+          ? min(widget.order.products.length * 20.0 + 110.0, 200.0)
+          : 100,
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 15),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(children: [
+            ListTile(
+              leading: Chip(
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                label: const Text(
+                  'Order',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                ),
+              ),
+              title: Text('EGP ${widget.order.price.toStringAsFixed(2)}'),
+              subtitle: Text(
+                  DateFormat('dd/MM/yyyy hh:mm').format(widget.order.date)),
+              trailing: IconButton(
+                icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
+                onPressed: () {
+                  setState(() {
+                    _expanded = !_expanded;
+                  });
+                },
+              ),
             ),
-            title: Text('${widget.order.price}'),
-            subtitle:
-                Text(DateFormat('dd/MM/yyy hh:mm').format(widget.order.date)),
-            trailing: IconButton(
-              icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
-              onPressed: () {
-                setState(() {
-                  _expanded = !_expanded;
-                });
-              },
-            ),
-          ),
-          if (_expanded)
-            Container(
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 100),
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 15),
-              height: min(widget.order.products.length * 20.0 + 10.0, 180.0),
+              height: _expanded
+                  ? min(widget.order.products.length * 20.0 + 10.0, 180.0)
+                  : 0,
               child: ListView(
                 children: widget.order.products
                     .map((e) => Row(
@@ -66,7 +77,8 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                     .toList(),
               ),
             )
-        ]),
+          ]),
+        ),
       ),
     );
   }
